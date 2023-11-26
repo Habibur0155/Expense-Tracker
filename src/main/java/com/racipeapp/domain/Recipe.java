@@ -3,13 +3,19 @@ package com.racipeapp.domain;
 import java.util.Set;
 
 import com.racipeapp.controllers.Ingredient;
+import com.racipeapp.domain.enumes.Difficulty;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
@@ -30,12 +36,20 @@ public class Recipe {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
 	private Set<Ingredient> ingredients;
-	
+
 	@Lob
 	private Byte[] image;
 
+	@Enumerated(value = EnumType.STRING)
+	private Difficulty difficulty;
+
 	@OneToOne(cascade = CascadeType.ALL)
 	private Notes notes;
+
+	@ManyToMany
+	@JoinTable(name = "recipe_category", 
+			joinColumns = @JoinColumn(name = "recipe_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+	private Set<Category> categories;
 
 	public Long getId() {
 		return id;
@@ -125,5 +139,20 @@ public class Recipe {
 		this.ingredients = ingredients;
 	}
 
-	
+	public Difficulty getDifficulty() {
+		return difficulty;
+	}
+
+	public void setDifficulty(Difficulty difficulty) {
+		this.difficulty = difficulty;
+	}
+
+	public Set<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(Set<Category> categories) {
+		this.categories = categories;
+	}
+
 }
